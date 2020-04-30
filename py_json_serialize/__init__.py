@@ -185,6 +185,14 @@ def json_serialize(cls):
 '''
 
 def _patch(cls, clsid, version):
+
+    # make sure cls::__init__() does not have mandatary positional parameters
+    # TODO: maybe we can inspect the cls::__init__() to avoid creating an instance.
+    try:
+        x = cls()
+    except:
+        raise ValueError(f"class {cls.__name__} object cannot be instaniated with empty parameters")
+
     _MyJSONEncoder.registerClass(cls, clsid, version)
 
     # adds some helper functons

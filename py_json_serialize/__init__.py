@@ -52,6 +52,8 @@ Limit:
 
 """
 
+__version__ = "0.9.0"
+
 import json
 
 # the unique key in serialized json object, its value is the full

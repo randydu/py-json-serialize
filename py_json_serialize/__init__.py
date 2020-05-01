@@ -60,7 +60,7 @@ import json
 # identifier of the serialized class
 _clsid = '_clsid_' 
 
-def JSON_SERIALIZE_ERROR(Exception):pass
+class JSON_SERIALIZE_ERROR(Exception):pass
 
 def _getTypeKey(typ):
     # get a full class identifier from a class type
@@ -82,7 +82,7 @@ class _MyJSONEncoder(json.JSONEncoder):
     def registerClass(cls, new_type, base, ver):
         key = _getClassId(base, ver)
         if key in cls.types:
-            raise JSON_SERIALIZE_ERROR(f"class {key} already registered!")
+            raise JSON_SERIALIZE_ERROR("class '%s' already registered!" % key)
 
         cls.types[key] = new_type
 
@@ -99,7 +99,7 @@ class _MyJSONEncoder(json.JSONEncoder):
             return cls.types[_getClassId(base, max_ver)]
         except ValueError:
             # no version at all
-            raise JSON_SERIALIZE_ERROR(f"class-ID '{clsid}' not supported!")
+            raise JSON_SERIALIZE_ERROR("class-ID '%s' not supported!" % clsid)
 
     def findClsIdfromObjectType(self, obj_type):
         # try finding if obj's type is registered (supports json-serialize)? 
@@ -122,7 +122,7 @@ class _MyJSONEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-def json_encode(obj, pretty: bool = True, encode_all_fields = False):
+def json_encode(obj, pretty = True, encode_all_fields = False):
     """ convert python object to json string 
     
     if encode_all_fields is true, then all class fields are serialized, otherwise 
@@ -152,7 +152,6 @@ def json_decode(jstr):
                 v = dic[i]
                 
                 #TODO: adds version migration query logic
-                ...
 
                 # here we only set the existent fields to avoid data polution.
                 if i in fields:
@@ -193,17 +192,17 @@ def _patch(cls, clsid, version):
     try:
         x = cls()
     except:
-        raise ValueError(f"class {cls.__name__} object cannot be instaniated with empty parameters")
+        raise ValueError("class '%s' object cannot be instaniated with empty parameters" % cls.__name__)
 
     _MyJSONEncoder.registerClass(cls, clsid, version)
 
     # adds some helper functons
-    def to_json(self, pretty:bool = True):
+    def to_json(self, pretty = True):
         """ serialize as json string """
         return json_encode(self, pretty)
 
     @staticmethod
-    def from_json(jstr: str):
+    def from_json(jstr):
         return json_decode(jstr)
     
     cls.to_json = to_json
@@ -220,7 +219,7 @@ def _json_serialize_no_param(cls):
     return _patch(cls, _getTypeKey(cls), 0)
 
 
-def _json_serialize_with_param(clsid: str, **kwargs):
+def _json_serialize_with_param(clsid, **kwargs):
     def wrap(cls):
         return _patch(cls, clsid if clsid != "" else _getTypeKey(cls), kwargs.get('version', 0))
 

@@ -5,14 +5,14 @@ def test_class_init():
 
     with pytest.raises(ValueError):
         @json_serialize
-        class A:
+        class A(object):
             def __init__(self, name):
                 self.name = name
 
 
 def test_json_serialize():
     @json_serialize
-    class A:
+    class A(object):
         def __init__(self, name=""):
             self.name = name
 
@@ -26,7 +26,7 @@ def test_json_serialize():
 
 def test_inherit():
     @json_serialize
-    class People:
+    class People(object):
         sex = ''
         def __init__(self, name=""):
             self.name = name
@@ -40,7 +40,7 @@ def test_inherit():
         sex = 'female'
 
     @json_serialize
-    class Family:
+    class Family(object):
         father = None
         mother = None
         son = None

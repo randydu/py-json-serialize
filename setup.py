@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(name="py-json-serialize", 
     version="0.9.0",
-    description = "json serialize library for Python",
+    description = "json serialize library for Python 2 and 3",
     long_description = long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/randydu/py-json-serialize.git",
@@ -21,6 +21,7 @@ setup(name="py-json-serialize",
     'Topic :: Software Development :: Libraries',
     'Topic :: Software Development :: Libraries :: Python Modules',
     'License :: OSI Approved :: MIT License',  
+    'Programming Language :: Python :: 2',
     'Programming Language :: Python :: 3',
   ],
 

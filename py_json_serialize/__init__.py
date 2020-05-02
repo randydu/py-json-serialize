@@ -233,8 +233,3 @@ def json_serialize(cls_or_id="", **kwargs):
             raise JSON_SERIALIZE_ERROR("syntax: json_serialize(id, [version=1]), id must be a string")
 
         return _json_serialize_with_param(cls_or_id, **kwargs)
-
-
-def resolveTaskClass(clsid):
-    ''' get task class from its classs-id '''
-    return _MyJSONEncoder.resolveClass(clsid)

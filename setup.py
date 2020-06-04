@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name="py-json-serialize", 
-    version="0.8.0",
+    version="0.9.0",
     description = "json serialize library for Python 2 and 3",
     long_description = long_description,
     long_description_content_type="text/markdown",

@@ -53,7 +53,7 @@ Limit:
 
 """
 
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 import json
 
@@ -142,13 +142,13 @@ def json_encode(obj, pretty=True, encode_all_fields=False):
     """
     encoder = _MyJSONEncoder(
         sort_keys=True, indent=4, ensure_ascii=False) if pretty else \
-            _MyJSONEncoder(ensure_ascii=False)
+        _MyJSONEncoder(ensure_ascii=False)
     encoder.enable_all_fields = encode_all_fields
     return encoder.encode(obj)
 
 
 def json_decode(jstr):
-    """ convert json string to python object """
+    """ convert json string or dictionary object to a python object """
 
     def resolve_my_types(dic):
         # resolve dictionary object to registered json-serializable class
@@ -175,6 +175,10 @@ def json_decode(jstr):
 
         return result
 
+    if isinstance(jstr, dict):
+        # a dictionary object
+        jstr = json.JSONEncoder().encode(jstr)
+
     return json.loads(jstr, object_hook=resolve_my_types)
 
 
@@ -186,8 +190,8 @@ def _patch(cls, clsid, version):
         _ = cls()
     except:
         raise ValueError(
-            "class '%s' object cannot be instaniated with empty parameters" \
-                % cls.__name__)
+            "class '%s' object cannot be instaniated with empty parameters"
+            % cls.__name__)
 
     _MyJSONEncoder.register_class(cls, clsid, version)
 
@@ -217,8 +221,8 @@ def _json_serialize_no_param(cls):
 
 def _json_serialize_with_param(clsid, **kwargs):
     def wrap(cls):
-        return _patch(cls, clsid if clsid != "" else _get_type_key(cls), \
-            kwargs.get('version', 0))
+        return _patch(cls, clsid if clsid != "" else _get_type_key(cls),
+                      kwargs.get('version', 0))
 
     return wrap
 
@@ -233,3 +237,10 @@ def json_serialize(cls_or_id="", **kwargs):
             "syntax: json_serialize(id, [version=1]), id must be a string")
 
     return _json_serialize_with_param(cls_or_id, **kwargs)
+
+
+# publish it in case a json-serialized str needs to be prepared manually.
+CLASS_ID = _CLSID
+
+__all__ = ['CLASS_ID', 'json_serialize', 'json_decode', 'json_encode',
+           'JsonSerializeError']

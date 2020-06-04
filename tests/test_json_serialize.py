@@ -1,5 +1,5 @@
 import pytest
-from py_json_serialize import json_serialize
+from py_json_serialize import *
 
 def test_class_init():
 
@@ -62,3 +62,16 @@ def test_inherit():
     assert f.father.name == 'Jason'
     assert f.mother.name == 'Maria'
     assert f.son.name == 'Tom'
+
+
+def test_class_id():
+    @json_serialize
+    class Hello: 
+        who = 'World'
+
+    hello = Hello.from_json({
+        CLASS_ID: "Hello",
+        "who": "Tom"
+    })
+    assert isinstance(hello, Hello)
+    assert hello.who == 'Tom'

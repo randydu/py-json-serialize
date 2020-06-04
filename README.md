@@ -86,14 +86,14 @@ None
         }
         ```
 
-    2. from_json(): reads json string to return an class object.
+    2. from_json(str|dict): reads json string or dictionary object to return an class object.
 
         It is actually a *staticmethod* that can be called to return an object of any type deduced from the class-id in the data string.
         so don't be surprised that you might get an object of different type if the input json data string is serialized from another class.
 
         So the from_json() is simply a handy helper method to make your code more readable if your app only handles one type of data. 
   
-- function __json_decode__(jstr: str)-> object: convert json string to python object 
+- function __json_decode__(jstr: str|dict)-> object: convert json string or dictionary to python object 
 
     This is a function to decode the serialized json string, its typical usage is as following:
 
@@ -109,10 +109,10 @@ None
     @json_serialize
     class UploadFile(Task):pass
 
-    task1 = Task.from_json("{ '_clsid_':'CopyFile' }")
+    task1 = Task.from_json({ CLASS_ID:'CopyFile' })
     assert isinstance(task1, CopyFile)
 
-    task2 = Task.from_json("{ '_clsid_':'UploadFile' }")
+    task2 = Task.from_json({ CLASS_ID:'UploadFile' })
     assert isinstance(task2, UploadFile)
     ```
 
@@ -131,10 +131,14 @@ None
     If *encode_all_fields* is true, then all class fields are serialized, otherwise 
     the internal fields (field name starts with '_') are ignored.
 
+- **CLASS_ID**: the unique key indicating which class is serialized.
 
-## Example
+    It is published in case a json string or dictionary object needs to be 
+    prepared manually as input to json_decode()/from_json().
 
+    The internal constant value of **CLASS_ID** is "**\_CLSID\_**"
 
-
-## Limitation
-
+    ```python
+    json_decode({ CLASS_ID: "Hello", who: "World" })
+    json_decode('{ "%s": "Hello", "who": "World" }' % CLASS_ID )
+    ```
